@@ -1,0 +1,69 @@
+﻿body {
+    padding: 0px;
+    font-color: #252445;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: url("../img/bg.png");
+}
+
+.body-content {
+    padding-top: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Quick and dirty fixes - this is mostly done to ensure the site looks okay,
+   not to actually enable beautiful coding standards. */
+
+div.hero {
+    text-align: center;
+}
+
+div.hero h1 {
+    font-weight: 800;
+    font-size: 8em;
+    padding-top: 100px;
+}
+
+div.hero h1:last-of-type{
+    margin-top: 0;
+    padding-top: 0;
+}
+
+div.navbar.bluegrey {
+    background-color: #3B3F53;
+}
+
+div.panel-heading h3.panel-title {
+    color: #fff;
+}
+
+div.panel.panel-primary > .panel-heading {
+    background-color: #3B3F53;
+}
+
+div.panel-body.projects ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+div.panel-body.projects li {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+    border-bottom: 1px solid #EEE;
+}
+
+div.panel-body.projects li:last-of-type {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+    border-bottom: none;
+}
+
+div.panel-body.signin form {
+    display: inline-block;
+    padding-right: 10px;
+}

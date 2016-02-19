@@ -1,0 +1,18 @@
+﻿@using System.Security.Policy
+
+@{
+    ViewData["Title"] = "Add Project";
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h2>Add Project Files</h2>
+
+        <form action="@Url.Action("UploadProjectFiles", "Projects")" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm">
+            <div class="fallback">
+                <input type="file" name="files" multiple/>
+                <input type="submit" value="Upload"/>
+            </div>
+        </form>
+    </div>
+</div>
