@@ -77,6 +77,7 @@ namespace TerrainFlow.Controllers
             catch (Exception ex)
             {
                 Trace.TraceError("Failed to process upload. \n" + ex.ToString());
+                return new HttpStatusCodeResult(StatusCodes.Status400BadRequest);
             }
         }
 
