@@ -23,7 +23,9 @@
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta8",
     "WindowsAzure.Storage": "6.2.2-preview",
     "Microsoft.AspNet.Authentication.Google": "1.0.0-rc1-final",
-    "Microsoft.AspNet.Authentication.Facebook": "1.0.0-rc1-final"
+    "Microsoft.AspNet.Authentication.Facebook": "1.0.0-rc1-final",
+    "BitMiracle.LibTiff.NET": "2.4.528",
+    "System.IO.Compression.ZipFile": "4.0.1-beta-23516"
   },
 
   "commands": {
@@ -31,7 +33,11 @@
   },
 
   "frameworks": {
-    "dnx451": { }
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Drawing": "4.0.0.0"
+      }
+    }
   },
 
   "exclude": [

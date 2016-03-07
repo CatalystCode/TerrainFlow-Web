@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using GeoTiffSharp;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
@@ -99,25 +101,59 @@ namespace TerrainFlow.Controllers
         {
             var t = DateTime.UtcNow - new DateTime(1970, 1, 1);
             var epoch = (int)t.TotalSeconds;
-            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            var unqiuefileName = fileName + "_" + epoch;
-            var filePath = Path.Combine(uploads, unqiuefileName);
+            var sourceName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var filePath = Path.GetTempFileName();
 
             // Save locally
             await file.SaveAsAsync(filePath);
 
-            // TODO: Process file (transformations, etc)
-            // TODO: Deal with file extension?
+            var resultPaths = ConvertFiles(filePath, sourceName);
 
-            // Make hash, upload to Azure Storage Blob
-            var hash = CreateHashFromFile(filePath);
-            await _storage.UploadFileToBlob(filePath, hash);
+            if (resultPaths != null && resultPaths.Any())
+            {
+                foreach (var path in resultPaths)
+                {
+                    await _storage.UploadFileToBlob(path, Path.GetFileName(path));
+                }
 
-            // Take hash and blob url, save to tables
-            _storage.SaveFileToTables(fileName, hash);
+                _storage.SaveFileToTables(sourceName, Path.GetFileNameWithoutExtension(resultPaths.First()));
+            }
 
-            return hash;
+
+            return sourceName;
+        }
+
+        // Rough implementation, support for zipped tiff's
+        private IEnumerable<string> ConvertFiles(string filePath, string sourceName)
+        {
+            string workingDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+
+            // If ZIP, extract first
+            if (string.Equals(Path.GetExtension(sourceName), "zip", StringComparison.OrdinalIgnoreCase))
+            {               
+                ZipFile.ExtractToDirectory(filePath, workingDirectory);
+
+                var files = Directory.GetFiles(workingDirectory);
+
+                // Lets see if we have a tiff file for now
+                var tiff = files.Where(f => string.Equals(Path.GetExtension(f), "tif")).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(tiff))
+                {
+                    var GeoTiff = new GeoTiff();
+                    var outputRoot = Path.GetTempFileName();
+
+                    var outputBinary = outputRoot + ".dat";
+                    var outputMetadata = outputRoot + ".json";
+                    var outputThumbnail = outputRoot + ".png";
+
+                    GeoTiff.ConvertToHeightMap(tiff, outputBinary, outputMetadata, outputThumbnail);
+
+                    return new List<string> { outputBinary, outputMetadata, outputThumbnail };
+                }
+            }
+
+            return null;
         }
 
         private string CreateHashFromFile(string filePath)
