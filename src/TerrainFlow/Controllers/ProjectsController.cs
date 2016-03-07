@@ -24,32 +24,25 @@ namespace TerrainFlow.Controllers
     [Authorize]
     public class ProjectsController : Controller
     {
-        private CloudStorageAccount _storageAccount;
-        private CloudBlobClient _blobClient;
-        private CloudBlobContainer _container;
-        private CloudTableClient _tableClient;
-        private CloudTable _projectsTable;
         private IConfiguration _configuration;
         private readonly IHostingEnvironment _environment;
+        private Storage _storage;
 
         public ProjectsController(IHostingEnvironment environment, IConfiguration configuration)
         {
+            _storage = new Storage(configuration);
+
             _environment = environment;
             _configuration = configuration;
         }
 
-        public ICollection<ProjectViewModel> GetProjectsFromTables()
+        private ICollection<ProjectViewModel> GetProjectsFromTables()
         {
-            EnsureTable();
-
-            var username = GetEmailFromUser();
-            if (username == null) throw new ArgumentNullException(nameof(username));
+            var projects = _storage.GetProjectsForUser(GetEmailFromUser());
 
             var collection = new Collection<ProjectViewModel>();
-            var query = new TableQuery<ProjectEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey",
-                    QueryComparisons.Equal, username));
 
-            foreach (var entity in _projectsTable.ExecuteQuery(query))
+            foreach (var entity in projects)
             {
                 collection.Add(new ProjectViewModel
                 {
@@ -119,73 +112,12 @@ namespace TerrainFlow.Controllers
 
             // Make hash, upload to Azure Storage Blob
             var hash = CreateHashFromFile(filePath);
-            await UploadFileToBlob(filePath, hash);
+            await _storage.UploadFileToBlob(filePath, hash);
 
             // Take hash and blob url, save to tables
-            SaveFileToTables(fileName, hash);
+            _storage.SaveFileToTables(fileName, hash);
 
             return hash;
-        }
-
-        private void EnsureTable()
-        {
-            if (_storageAccount == null)
-            {
-                _storageAccount = CloudStorageAccount.Parse(_configuration["STORAGE_CONNECTION"]);
-            }
-
-            if (_tableClient == null)
-            {
-                _tableClient = _storageAccount.CreateCloudTableClient();
-            }
-
-            if (_projectsTable == null)
-            {
-                _projectsTable = _tableClient.GetTableReference("projects");
-                _projectsTable.CreateIfNotExists();
-            }
-        }
-
-        private void EnsureContainer()
-        {
-            if (_storageAccount == null)
-            {
-                _storageAccount =  CloudStorageAccount.Parse(_configuration["STORAGE_CONNECTION"]);
-            }
-
-            if (_blobClient == null)
-            {
-                _blobClient = _storageAccount.CreateCloudBlobClient();
-            }
-
-            if (_container == null)
-            {
-                _container = _blobClient.GetContainerReference("projects");
-            }
-        }
-
-        private void SaveFileToTables(string name, string file)
-        {
-            EnsureTable();
-            var username = "";//this.User.GetUserName();
-            if (username == null) throw new ArgumentNullException(nameof(username));
-
-            var entity = new ProjectEntity(username, file, name);
-
-            var insertOperation = TableOperation.Insert(entity);
-            _projectsTable.Execute(insertOperation);
-        }
-
-        private async Task UploadFileToBlob(string filePath, string blobName)
-        {
-            EnsureContainer();
-
-            CloudBlockBlob blockBlob = _container.GetBlockBlobReference(blobName);
-
-            using (var fileStream = System.IO.File.OpenRead(filePath))
-            {
-                await blockBlob.UploadFromStreamAsync(fileStream);
-            }
         }
 
         private string CreateHashFromFile(string filePath)
