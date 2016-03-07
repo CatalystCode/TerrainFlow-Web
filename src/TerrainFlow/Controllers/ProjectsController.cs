@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -62,12 +63,21 @@ namespace TerrainFlow.Controllers
             var files = Request.Form.Files;
             var hashes = new List<string>();
 
-            foreach (var file in files.Where(file => file.Length > 0))
-            {
-                hashes.Add(await ProcessUpload(file));
-            }
+            Trace.TraceInformation("Upload called with {0} files", files.Count());
 
-            return new JsonResult(hashes);
+            try
+            {
+                foreach (var file in files.Where(file => file.Length > 0))
+                {
+                    hashes.Add(await ProcessUpload(file));
+                }
+
+                return new JsonResult(hashes);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Failed to process upload. \n" + ex.ToString());
+            }
         }
 
         // /Projects/
@@ -99,6 +109,8 @@ namespace TerrainFlow.Controllers
 
         private async Task<string> ProcessUpload(IFormFile file)
         {
+            Trace.TraceInformation("Process upload for {0}", file.ToString());
+
             var t = DateTime.UtcNow - new DateTime(1970, 1, 1);
             var epoch = (int)t.TotalSeconds;
             var sourceName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
@@ -113,6 +125,7 @@ namespace TerrainFlow.Controllers
             {
                 foreach (var path in resultPaths)
                 {
+                    Trace.TraceInformation("Moving to blog store: {0}", path);
                     await _storage.UploadFileToBlob(path, Path.GetFileName(path));
                 }
 
@@ -127,19 +140,24 @@ namespace TerrainFlow.Controllers
         private IEnumerable<string> ConvertFiles(string filePath, string sourceName)
         {
             string workingDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(workingDirectory);
 
             // If ZIP, extract first
             if (string.Equals(Path.GetExtension(sourceName), "zip", StringComparison.OrdinalIgnoreCase))
-            {               
+            {
+                Trace.TraceInformation("Found zip file, decompressing.");
+
                 ZipFile.ExtractToDirectory(filePath, workingDirectory);
 
                 var files = Directory.GetFiles(workingDirectory);
 
                 // Lets see if we have a tiff file for now
-                var tiff = files.Where(f => string.Equals(Path.GetExtension(f), "tif")).FirstOrDefault();
+                var tiff = files.Where(f => string.Equals(Path.GetExtension(f), "tif", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(tiff))
                 {
+                    Trace.TraceInformation("Found tiff, converting.");
+
                     var GeoTiff = new GeoTiff();
                     var outputRoot = Path.GetTempFileName();
 
