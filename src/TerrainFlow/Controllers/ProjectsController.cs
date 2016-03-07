@@ -15,11 +15,6 @@ using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
-
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Table;
-using TerrainFlow.Models;
 using TerrainFlow.ViewModels.Projects;
 
 namespace TerrainFlow.Controllers
@@ -94,7 +89,6 @@ namespace TerrainFlow.Controllers
         }
 
         // /Projects/Add
-        [Authorize]
         [HttpGet]
         public IActionResult Add()
         {
@@ -130,7 +124,7 @@ namespace TerrainFlow.Controllers
                     await _storage.UploadFileToBlob(path, Path.GetFileName(path));
                 }
 
-                _storage.SaveFileToTables(sourceName, Path.GetFileNameWithoutExtension(resultPaths.First()));
+                _storage.SaveFileToTables(sourceName, Path.GetFileNameWithoutExtension(resultPaths.First()), GetEmailFromUser());
             }
 
 
@@ -144,7 +138,7 @@ namespace TerrainFlow.Controllers
             Directory.CreateDirectory(workingDirectory);
 
             // If ZIP, extract first
-            if (string.Equals(Path.GetExtension(sourceName), "zip", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(Path.GetExtension(sourceName), ".zip", StringComparison.OrdinalIgnoreCase))
             {
                 Trace.TraceInformation("Found zip file, decompressing.");
 
@@ -153,7 +147,7 @@ namespace TerrainFlow.Controllers
                 var files = Directory.GetFiles(workingDirectory);
 
                 // Lets see if we have a tiff file for now
-                var tiff = files.Where(f => string.Equals(Path.GetExtension(f), "tif", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var tiff = files.Where(f => string.Equals(Path.GetExtension(f), ".tif", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(tiff))
                 {

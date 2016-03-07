@@ -63,10 +63,9 @@ namespace TerrainFlow
             }
         }
 
-        public void SaveFileToTables(string name, string file)
+        public void SaveFileToTables(string name, string file, string username)
         {
             EnsureTable();
-            var username = "";//this.User.GetUserName();
             if (username == null) throw new ArgumentNullException(nameof(username));
 
             var entity = new ProjectEntity(username, file, name);
