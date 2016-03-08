@@ -34,9 +34,7 @@
   "frameworks": {
     "dnx451": {
       "frameworkAssemblies": {
-        "System.Drawing": "4.0.0.0",
-        "System.IO.Compression": "4.0.0.0",
-        "System.IO.Compression.FileSystem": "4.0.0.0"
+        "System.Drawing": "4.0.0.0"
       }
     }
   },
