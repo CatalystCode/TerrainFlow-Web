@@ -142,7 +142,7 @@ namespace TerrainFlow.Controllers
             {
                 Trace.TraceInformation("Found zip file, decompressing.");
 
-        //        ZipFile.ExtractToDirectory(filePath, workingDirectory);
+                ZipFile.ExtractToDirectory(filePath, workingDirectory);
 
                 var files = Directory.GetFiles(workingDirectory);
 
