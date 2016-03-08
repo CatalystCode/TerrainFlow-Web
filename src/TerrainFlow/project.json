@@ -10,7 +10,6 @@
     "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
     "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-rc1-final",
     "Microsoft.AspNet.Razor": "4.0.0-rc1-final",
-    "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
     "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
     "Microsoft.AspNet.WebApi": "5.2.3",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc1-final",
@@ -24,7 +23,8 @@
     "WindowsAzure.Storage": "6.2.2-preview",
     "Microsoft.AspNet.Authentication.Google": "1.0.0-rc1-final",
     "Microsoft.AspNet.Authentication.Facebook": "1.0.0-rc1-final",
-    "BitMiracle.LibTiff.NET": "2.4.528"
+    "BitMiracle.LibTiff.NET": "2.4.528",
+    "Microsoft.AspNet.Hosting": "1.0.0-rc1-final"
   },
 
   "commands": {
@@ -37,6 +37,9 @@
         "System.Drawing": "4.0.0.0",
         "System.IO.Compression": "4.0.0.0",
         "System.IO.Compression.FileSystem": "4.0.0.0"
+      },
+      "dependencies": {
+        "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*"
       }
     }
   },
