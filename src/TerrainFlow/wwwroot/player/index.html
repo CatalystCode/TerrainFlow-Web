@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
@@ -28,6 +28,20 @@
   };
 </script>
 <script src="http://terrainflow.blob.core.windows.net/build/0.0.1/UnityLoader.js"></script>
+<script>
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
 
+    function updatePath() {
+        SendMessage("TerrainLoader", "DownloadTerrain", getParameterByName("uri"))
+    }
+</script>
   </body>
 </html>
