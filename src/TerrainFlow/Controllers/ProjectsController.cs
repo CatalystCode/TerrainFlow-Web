@@ -19,7 +19,7 @@ using TerrainFlow.ViewModels.Projects;
 
 namespace TerrainFlow.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class ProjectsController : Controller
     {
         private IConfiguration _configuration;
