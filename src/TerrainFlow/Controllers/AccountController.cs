@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Http.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TerrainFlow.Controllers
 {
@@ -27,7 +27,7 @@ namespace TerrainFlow.Controllers
             // authentication provider choosen by the user agent.
             if (string.IsNullOrEmpty(provider))
             {
-                return HttpBadRequest();
+                return BadRequest();
             }
 
             // Note: the "returnUrl" parameter corresponds to the endpoint the user agent
@@ -35,7 +35,7 @@ namespace TerrainFlow.Controllers
             // the redirect_uri of the requesting client application.
             if (string.IsNullOrEmpty(returnUrl))
             {
-                return HttpBadRequest();
+                return BadRequest();
             }
 
             var redirect = Url.Action("ExternalCallback", "Account");

@@ -9,10 +9,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using GeoTiffSharp;
-using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
 using TerrainFlow.ViewModels.Projects;
@@ -72,7 +72,7 @@ namespace TerrainFlow.Controllers
             catch (Exception ex)
             {
                 Trace.TraceError("Failed to process upload. \n" + ex.ToString());
-                return new HttpStatusCodeResult(StatusCodes.Status400BadRequest);
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
         }
 
@@ -112,7 +112,10 @@ namespace TerrainFlow.Controllers
             var filePath = Path.GetTempFileName();
 
             // Save locally
-            await file.SaveAsAsync(filePath);
+            using (var stream = System.IO.File.OpenWrite(filePath))
+            {
+                await file.CopyToAsync(stream);
+            }
 
             var resultPaths = ConvertFiles(filePath, sourceName);
 

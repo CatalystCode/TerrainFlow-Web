@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Configuration;
 using System.Reflection;
-using Microsoft.AspNet.Authentication.Facebook;
-using Microsoft.AspNet.Authentication.Google;
-using Microsoft.AspNet.Authentication.MicrosoftAccount;
-using Microsoft.AspNet.Authentication.OAuth;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 
 namespace TerrainFlow
 {
@@ -26,7 +27,7 @@ namespace TerrainFlow
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
-        }
+        }                       
 
         public IConfigurationRoot Configuration { get; set; }
 
@@ -37,42 +38,42 @@ namespace TerrainFlow
             services.AddAuthentication(options => options.SignInScheme = "Cookie");
 
             // Add MVC services to the services container.
-            services.AddMvc();
+            services.AddMvcCore();
 
             // Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
             // You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
             // services.AddWebApiConventions();
 
-            services.AddInstance<IConfiguration>(Configuration);
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         // Configure is called after ConfigureServices is called.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
-            loggerFactory.MinimumLevel = LogLevel.Information;
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
 
             // Add the platform handler to the request pipeline.
             app.UseIISPlatformHandler();
 
-            app.UseCookieAuthentication(options =>
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                options.AuthenticationScheme = "Cookie";
-                options.AutomaticAuthenticate = true;
-                options.AutomaticChallenge = true;
-                options.LoginPath = new PathString("/login");
+                AuthenticationScheme = "Cookie",
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                LoginPath = new PathString("/login")
             });
 
-            var microsoftOptions = 
-
-            app.UseMicrosoftAccountAuthentication(options =>
+            var microsoftOptions = new MicrosoftAccountOptions
             {
-                options.ClientId = Configuration["MICROSOFT_CLIENT_ID"];
-                options.ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"];
-                options.SignInScheme = "Cookie";
-                options.Scope.Add("wl.emails");
-            });
+                ClientId = Configuration["MICROSOFT_CLIENT_ID"],
+                ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"],
+                SignInScheme = "Cookie"
+            };
+
+            microsoftOptions.Scope.Add("wl.emails");
+
+            app.UseMicrosoftAccountAuthentication(microsoftOptions);         
 
             app.UseGoogleAuthentication(new GoogleOptions
             {
@@ -104,6 +105,17 @@ namespace TerrainFlow
             });
         }
 
-        public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+        public static void Main(string[] args)
+        {
+            //WebApplication.Run<Startup>(args);
+
+            var host = new WebHostBuilder()
+            .UseDefaultConfiguration(args)
+            .UseServer("Microsoft.AspNetCore.Server.Kestrel")
+            .UseStartup<Startup>()
+            .Build();
+
+            host.Run();
+        }
     }
 }
