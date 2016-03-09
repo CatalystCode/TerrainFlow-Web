@@ -62,7 +62,7 @@ namespace TerrainFlow
                 AuthenticationScheme = "Cookie",
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                LoginPath = new PathString("/login")
+                LoginPath = new PathString("/signin")
             });
 
             var microsoftOptions = new MicrosoftAccountOptions
