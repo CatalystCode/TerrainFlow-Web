@@ -12,12 +12,15 @@ namespace TerrainFlow.Models
         public ProjectEntity(string user, string file, string name)
         {
             this.PartitionKey = user;
-            this.RowKey = file;
+            this.RowKey = user;
             this.Name = name;
+            this.Url = file;
         }
 
         public ProjectEntity() { }
 
         public string Name { get; set; }
+
+        public string Url { get; set; }
     }
 }

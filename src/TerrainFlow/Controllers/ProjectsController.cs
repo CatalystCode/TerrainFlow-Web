@@ -19,7 +19,7 @@ using TerrainFlow.ViewModels.Projects;
 
 namespace TerrainFlow.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ProjectsController : Controller
     {
         private IConfiguration _configuration;
@@ -45,7 +45,7 @@ namespace TerrainFlow.Controllers
                 collection.Add(new ProjectViewModel
                 {                    
                     Name = entity.Name,
-                    URL =  entity.RowKey
+                    URL =  entity.Url
                 });
             }
 
@@ -124,7 +124,7 @@ namespace TerrainFlow.Controllers
             {
                 foreach (var path in resultPaths)
                 {
-                    Trace.TraceInformation("Moving to blog store: {0}", path);
+                    Trace.TraceInformation("Moving to blob store: {0}", path);
                     var blobUri = await _storage.UploadFileToBlob(path, Path.GetFileName(path));
 
                     // Hack - Grab the destination URI for use later
@@ -194,6 +194,10 @@ namespace TerrainFlow.Controllers
 
         private string GetEmailFromUser()
         {
+#if DEBUG
+            return "test@test.com";
+#endif
+
             var identity = (ClaimsIdentity)User.Identity;
             var email = identity.FindFirst(ClaimTypes.Email).Value;
 
