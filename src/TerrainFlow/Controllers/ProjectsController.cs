@@ -194,10 +194,6 @@ namespace TerrainFlow.Controllers
 
         private string GetEmailFromUser()
         {
-#if DEBUG
-            return "test@test.com";
-#endif
-
             var identity = (ClaimsIdentity)User.Identity;
             var email = identity.FindFirst(ClaimTypes.Email).Value;
 
