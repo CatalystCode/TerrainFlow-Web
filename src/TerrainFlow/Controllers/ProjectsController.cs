@@ -43,9 +43,9 @@ namespace TerrainFlow.Controllers
             foreach (var entity in projects)
             {
                 collection.Add(new ProjectViewModel
-                {
+                {                    
                     Name = entity.Name,
-                    URL = entity.RowKey
+                    URL =  entity.RowKey
                 });
             }
 
@@ -110,6 +110,7 @@ namespace TerrainFlow.Controllers
             var epoch = (int)t.TotalSeconds;
             var sourceName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var filePath = Path.GetTempFileName();
+            string url = null;
 
             // Save locally
             using (var stream = System.IO.File.OpenWrite(filePath))
@@ -124,14 +125,21 @@ namespace TerrainFlow.Controllers
                 foreach (var path in resultPaths)
                 {
                     Trace.TraceInformation("Moving to blog store: {0}", path);
-                    await _storage.UploadFileToBlob(path, Path.GetFileName(path));
-                }
+                    var blobUri = await _storage.UploadFileToBlob(path, Path.GetFileName(path));
 
-                _storage.SaveFileToTables(sourceName, Path.GetFileNameWithoutExtension(resultPaths.First()), GetEmailFromUser());
+                    // Hack - Grab the destination URI for use later
+                    if (blobUri.Contains(".dat"))
+                    {
+                        url = blobUri.Replace(".dat", string.Empty);
+                    }
+                    
+                }
+                
+                _storage.SaveFileToTables(Path.GetFileNameWithoutExtension(sourceName), url, GetEmailFromUser());
             }
 
 
-            return sourceName;
+            return url ?? sourceName;
         }
 
         // Rough implementation, support for zipped tiff's
@@ -157,11 +165,11 @@ namespace TerrainFlow.Controllers
                     Trace.TraceInformation("Found tiff, converting.");
 
                     var GeoTiff = new GeoTiff();
-                    var outputRoot = Path.GetTempFileName();
+                    var outputRoot = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
 
                     var outputBinary = outputRoot + ".dat";
                     var outputMetadata = outputRoot + ".json";
-                    var outputThumbnail = outputRoot + ".png";
+                    var outputThumbnail = outputRoot + ".jpg";
 
                     GeoTiff.ConvertToHeightMap(tiff, outputBinary, outputMetadata, outputThumbnail);
 

@@ -14,11 +14,15 @@
             {
             <p>You don't have any projects yet - would <a href="/Projects/Add">upload a file</a>?</p>
         }
+        else
+        {
+            <a href="/Projects/Add">upload a file</a>
+        }
         <ul>
             @foreach (var item in Model.Projects)
             {
                 <li>
-                    <span>@item.Name</span> <a href="javascript:void(0)" class="btn btn-raised btn-sm"><i class="material-icons">open_in_new</i> Open in TerrainFlow</a>
+                    <span>@item.Name</span><img width="100" src='@item.URL + ".jpg"' <a href="~/player/index.html?uri=@item.URL" class="btn btn-raised btn-sm"><i class="material-icons">open_in_new</i> Open in TerrainFlow</a>
                 </li>
             }
         </ul>

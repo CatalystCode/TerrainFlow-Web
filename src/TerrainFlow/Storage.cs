@@ -74,7 +74,7 @@ namespace TerrainFlow
             _projectsTable.Execute(insertOperation);
         }
 
-        public async Task UploadFileToBlob(string filePath, string blobName)
+        public async Task<string> UploadFileToBlob(string filePath, string blobName)
         {
             EnsureContainer();
 
@@ -84,6 +84,8 @@ namespace TerrainFlow
             {
                 await blockBlob.UploadFromStreamAsync(fileStream);
             }
+
+            return blockBlob.Uri.ToString();
         }
 
         public IEnumerable<ProjectEntity> GetProjectsForUser(string username)
