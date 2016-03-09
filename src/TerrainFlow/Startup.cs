@@ -21,7 +21,7 @@ namespace TerrainFlow
         {
             // Setup configuration sources.
             var builder = new ConfigurationBuilder()
-                .SetBasePath(appEnv.ApplicationBasePath)
+                .SetBasePath(appEnv.ApplicationBasePath)                
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
@@ -111,6 +111,7 @@ namespace TerrainFlow
 
             var host = new WebHostBuilder()
             .UseDefaultConfiguration(args)
+            .UseIISPlatformHandlerUrl()
             .UseServer("Microsoft.AspNetCore.Server.Kestrel")
             .UseStartup<Startup>()
             .Build();
