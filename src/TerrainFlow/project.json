@@ -45,8 +45,8 @@
     "Microsoft.AspNetCore.WebUtilities": "1.0.0-rc2-20100",
     "Microsoft.AspNetCore.Routing": "1.0.0-rc2-20100",
     "Microsoft.AspNetCore.Mvc.Razor": "1.0.0-rc2-20100",
-    "Microsoft.AspNetCore.Mvc.Core": "1.0.0-rc2-20100",
-    "Microsoft.AspNetCore.Mvc.WebApiCompatShim": "1.0.0-rc2-20100"
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-20100",
+    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-rc2-20100"
   },
   "compilationOptions": {    
     "emitEntryPoint": true
