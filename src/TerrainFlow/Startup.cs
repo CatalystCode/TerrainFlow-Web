@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -53,6 +54,8 @@ namespace TerrainFlow
         {
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
+
+            Trace.Listeners.Add(new AzureApplicationLogTraceListener());
 
             // Add the platform handler to the request pipeline.
             app.UseIISPlatformHandler();
