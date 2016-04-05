@@ -1,10 +1,24 @@
 ## TerrainFlow WebClient
-This is the web client for TerrainFlow, written with MVC 6 (using the first release candidate of 1.0.0), meaning that this puppy is not only using the latest and greatest .NET stuff, but could also run on Linux and Mac OS X. However, for compat reasons, this app is currently locked to .NET 4.5.1 - go and change `project.json` if you feel like living on the bleeding edge.
+This is the web client for TerrainFlow, written with MVC 6 (using the first release candidate of 1.0.0), meaning that this puppy is not only using the latest and greatest .NET stuff, but could also run on Linux and Mac OS X.
 
 ![Screenshot](Screenshot.jpg)
 
-### Running
+### Running locally
 Before running, please ensure that you run `bower install` inside `src/TerrainFlow` to install bower dependencies.
+
+To properly debug with auth I launch visual studio from a command line, and prior to launching it I set the HTTP_PLATFORM_PORT environment variable to 80.
+
+```
+set HTTP_PLATFORM_PORT=80
+"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
+
+```
+
+I think update my hostfile to redirect my public facing URL which is trusted by my authentication providers to localhost.  e.g.
+
+```
+127.0.0.1 mysite.azurewebsites.net
+```
 
 ### Extending
 * To extend or change the authentication methods, see `src/TerrainFlow/startup.cs`. Authentication is currently enabled via Facebook, Google, and Microsoft; usign a client-side cookie as storage mechanism. We get away without using cookies because we don't really need to interact with the user account - we just need to confirm that our user has a certain unique email address.

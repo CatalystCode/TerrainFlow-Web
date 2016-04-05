@@ -75,7 +75,7 @@ namespace TerrainFlow
                 SignInScheme = "Cookie"
             };
 
-            microsoftOptions.Scope.Add("wl.emails");
+            //microsoftOptions.Scope.Add("https://graph.microsoft.com/wl.emails");
 
             app.UseMicrosoftAccountAuthentication(microsoftOptions);         
 

@@ -13,7 +13,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <DevelopmentServerPort>40755</DevelopmentServerPort>
+    <DevelopmentServerPort>80</DevelopmentServerPort>
     <SSLPort>44300</SSLPort>
     <IISExpressWindowsAuthentication>Enabled</IISExpressWindowsAuthentication>
   </PropertyGroup>
