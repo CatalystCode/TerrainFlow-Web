@@ -68,16 +68,26 @@ namespace TerrainFlow
                 LoginPath = new PathString("/signin")
             });
 
-            var microsoftOptions = new MicrosoftAccountOptions
+            app.UseOAuthAuthentication(new OAuthOptions
             {
+                AuthenticationScheme = "Microsoft-AccessToken",
+                DisplayName = "MicrosoftAccount-AccessToken",
                 ClientId = Configuration["MICROSOFT_CLIENT_ID"],
                 ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"],
-                SignInScheme = "Cookie"
-            };
+                CallbackPath = new PathString("/signin-microsoft"),
+                AuthorizationEndpoint = MicrosoftAccountDefaults.AuthorizationEndpoint,
+                TokenEndpoint = MicrosoftAccountDefaults.TokenEndpoint,
+                Scope = { "https://graph.microsoft.com/user.read" },
+                SaveTokens = true
+            });
 
-            //microsoftOptions.Scope.Add("https://graph.microsoft.com/wl.emails");
-
-            app.UseMicrosoftAccountAuthentication(microsoftOptions);         
+            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
+            {
+                DisplayName = "MicrosoftAccount",
+                ClientId = Configuration["MICROSOFT_CLIENT_ID"],
+                ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"],
+                SaveTokens = true
+            });
 
             app.UseGoogleAuthentication(new GoogleOptions
             {

@@ -42,7 +42,7 @@ namespace TerrainFlow.Controllers
             return new ChallengeResult(provider, new AuthenticationProperties
             {
                 
-                RedirectUri = redirect
+                RedirectUri = redirect 
             });
         }
 
