@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
@@ -9,10 +10,11 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Filter;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace TerrainFlow
 {
@@ -50,7 +52,8 @@ namespace TerrainFlow
         }
 
         // Configure is called after ConfigureServices is called.
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                                    IApplicationEnvironment appEnv, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
@@ -85,7 +88,7 @@ namespace TerrainFlow
             {
                 DisplayName = "MicrosoftAccount",
                 ClientId = Configuration["MICROSOFT_CLIENT_ID"],
-                ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"],
+                ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"], 
                 SaveTokens = true
             });
 

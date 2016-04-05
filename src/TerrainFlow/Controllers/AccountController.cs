@@ -23,6 +23,8 @@ namespace TerrainFlow.Controllers
         [HttpPost("~/Signin")]
         public IActionResult Signin(string provider, string returnUrl)
         {
+            Request.Scheme = "https";
+
             // Note: the "provider" parameter corresponds to the external
             // authentication provider choosen by the user agent.
             if (string.IsNullOrEmpty(provider))
