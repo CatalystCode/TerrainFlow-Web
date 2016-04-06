@@ -58,16 +58,19 @@ namespace TerrainFlow
         {
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
-
+           
             Trace.Listeners.Add(new AzureApplicationLogTraceListener());
-
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.All
-            });
 
             // Add the platform handler to the request pipeline.
             app.UseIISPlatformHandler();
+
+            app.Use(async (context, next) =>
+            {
+                Console.WriteLine("X-Forwarded-Proto: " + context.Request.Headers["X -Forwarded-Proto"]);
+                context.Request.IsHttps = true;
+                context.Request.Scheme = "https";             
+                await next.Invoke();
+            });
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
