@@ -65,15 +65,19 @@ namespace TerrainFlow
             {
                 if (context.Request.Headers.ContainsKey("X-Forwarded-Proto"))
                 {
-                    if (string.Equals(context.Request.Headers["X-Forwarded-Proto"][0], "https"))
+                    if (string.Equals(context.Request.Headers["X-Forwarded-Proto"][0], "http"))
+                    {                     
+                        var withHttps = "https://" + context.Request.Host + context.Request.Path;
+                        context.Response.Redirect(withHttps);
+                    }
+                    else
                     {
                         await next();
                     }
                 }
                 else
                 {
-                    var withHttps = "https://" + context.Request.Host + context.Request.Path;
-                    context.Response.Redirect(withHttps);
+                    await next();
                 }
             });
 
