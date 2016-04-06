@@ -11,13 +11,10 @@
     </div>
     <div class="panel-body projects">
         @if (Model.Projects.Count == 0)
-            {
-            <p>You don't have any projects yet - would <a href="/Projects/Add">upload a file</a>?</p>
-        }
-        else
         {
-            <a href="/Projects/Add">upload a file</a>
+            <p>You don't have any projects yet.  Would you like to <a href="/Projects/Add">upload a file</a>?</p>
         }
+        <a class="btn btn-raised btn-sm" href="/Projects/Add"><i class="material-icons">note_add</i>Upload</a>
         <ul>
             @foreach (var item in Model.Projects)
             {

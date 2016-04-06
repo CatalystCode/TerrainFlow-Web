@@ -7,12 +7,13 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <h2>Add Project Files</h2>
-
+        <p>This version of the beta only supports GeoTiff data in a zip file.  You should create a zip file that contains the files from your geotiff, typically .prj, .tfw, and .tif.  The maximum file size is 100MB.</p>
         <form action="@Url.Action("UploadProjectFiles", "Projects")" method="post" enctype="multipart/form-data" class="dropzone" id="dropzoneForm">
             <div class="fallback">
                 <input type="file" name="files" multiple/>
                 <input type="submit" value="Upload"/>
             </div>
         </form>
+        <p>Additional instructions</p>
     </div>
 </div>
