@@ -48,7 +48,8 @@
     "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-20100",
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-rc2-20100",
     "Microsoft.AspNetCore.Mvc.Dnx": "1.0.0-rc2-20100",
-    "Microsoft.AspNetCore.Server.Kestrel.Https": "1.0.0-rc2-20100"
+    "Microsoft.AspNetCore.Server.Kestrel.Https": "1.0.0-rc2-20100",
+    "Microsoft.AspNetCore.HttpOverrides": "1.0.0-rc2-20100"
   },
   "compilationOptions": {    
     "emitEntryPoint": true

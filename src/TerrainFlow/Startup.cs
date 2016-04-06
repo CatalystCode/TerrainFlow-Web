@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace TerrainFlow
 {
@@ -36,7 +37,7 @@ namespace TerrainFlow
 
         // This method gets called by the runtime.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {                               
             // Cookie Login
             services.AddAuthentication(options => options.SignInScheme = "Cookie");
 
@@ -62,6 +63,11 @@ namespace TerrainFlow
 
             // Add the platform handler to the request pipeline.
             app.UseIISPlatformHandler();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
