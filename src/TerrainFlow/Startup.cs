@@ -64,11 +64,17 @@ namespace TerrainFlow
             app.Use(async (context, next) =>
             {
                 if (context.Request.Headers.ContainsKey("X-Forwarded-Proto"))
-                    Console.WriteLine("X-Forwarded-Proto: " + context.Request.Headers["X-Forwarded-Proto"][0]);
-
-                if (context.Request.Headers.ContainsKey("X-Forwarded-For"))
-                    Console.WriteLine("X-Forwarded-For: " + context.Request.Headers["X-Forwarded-For"][0]);
-                await next.Invoke();
+                {
+                    if (string.Equals(context.Request.Headers["X-Forwarded-Proto"][0], "https"))
+                    {
+                        await next();
+                    }
+                }
+                else
+                {
+                    var withHttps = "https://" + context.Request.Host + context.Request.Path;
+                    context.Response.Redirect(withHttps);
+                }
             });
 
             // Add the platform handler to the request pipeline.
