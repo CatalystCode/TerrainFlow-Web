@@ -61,12 +61,21 @@ namespace TerrainFlow
            
             Trace.Listeners.Add(new AzureApplicationLogTraceListener());
 
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Headers.ContainsKey("X-Forwarded-Proto"))
+                    Console.WriteLine("X-Forwarded-Proto: " + context.Request.Headers["X-Forwarded-Proto"][0]);
+
+                if (context.Request.Headers.ContainsKey("X-Forwarded-For"))
+                    Console.WriteLine("X-Forwarded-For: " + context.Request.Headers["X-Forwarded-For"][0]);
+                await next.Invoke();
+            });
+
             // Add the platform handler to the request pipeline.
             app.UseIISPlatformHandler();
 
             app.Use(async (context, next) =>
             {
-                Console.WriteLine("X-Forwarded-Proto: " + context.Request.Headers["X -Forwarded-Proto"]);
                 context.Request.IsHttps = true;
                 context.Request.Scheme = "https";             
                 await next.Invoke();
