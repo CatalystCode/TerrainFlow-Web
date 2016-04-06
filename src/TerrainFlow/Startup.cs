@@ -73,7 +73,7 @@ namespace TerrainFlow
 
             app.UseOAuthAuthentication(new OAuthOptions
             {
-                AuthenticationScheme = "Microsoft-AccessToken",
+                AuthenticationScheme = "Microsoft",
                 DisplayName = "MicrosoftAccount-AccessToken",
                 ClientId = Configuration["MICROSOFT_CLIENT_ID"],
                 ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"],
