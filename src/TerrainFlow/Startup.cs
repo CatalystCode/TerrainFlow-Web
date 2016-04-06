@@ -61,13 +61,13 @@ namespace TerrainFlow
 
             Trace.Listeners.Add(new AzureApplicationLogTraceListener());
 
-            // Add the platform handler to the request pipeline.
-            app.UseIISPlatformHandler();
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.All
             });
+
+            // Add the platform handler to the request pipeline.
+            app.UseIISPlatformHandler();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
