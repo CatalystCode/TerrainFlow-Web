@@ -80,18 +80,18 @@ namespace TerrainFlow
                 LoginPath = new PathString("/signin")
             });
 
-            app.UseOAuthAuthentication(new OAuthOptions
-            {
-                AuthenticationScheme = "Microsoft",
-                DisplayName = "MicrosoftAccount-AccessToken",
-                ClientId = Configuration["MICROSOFT_CLIENT_ID"],
-                ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"],
-                CallbackPath = new PathString("/signin-microsoft"),
-                AuthorizationEndpoint = MicrosoftAccountDefaults.AuthorizationEndpoint,
-                TokenEndpoint = MicrosoftAccountDefaults.TokenEndpoint,
-                Scope = { "https://graph.microsoft.com/user.read" },
-                SaveTokens = true
-            });
+            //app.UseOAuthAuthentication(new OAuthOptions
+            //{
+            //    AuthenticationScheme = "Microsoft",
+            //    DisplayName = "MicrosoftAccount-AccessToken",
+            //    ClientId = Configuration["MICROSOFT_CLIENT_ID"],
+            //    ClientSecret = Configuration["MICROSOFT_CLIENT_SECRET"],
+            //    CallbackPath = new PathString("/signin-microsoft"),
+            //    AuthorizationEndpoint = MicrosoftAccountDefaults.AuthorizationEndpoint,
+            //    TokenEndpoint = MicrosoftAccountDefaults.TokenEndpoint,
+            //    Scope = { "https://graph.microsoft.com/user.read" },
+            //    SaveTokens = true
+            //});
 
             app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
             {
