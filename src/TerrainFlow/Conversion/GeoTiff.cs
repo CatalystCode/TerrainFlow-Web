@@ -109,29 +109,44 @@ namespace GeoTiffSharp
             }
         }
 
-        private void WriteBinary(string inputFilename, Stream output, string bitmapFilename, FileMetadata metadata)
+        private float[,] WriteBinary(string inputFilename, string bitmapFilename, FileMetadata metadata)
         {
             float min = float.MaxValue;
             float max = float.MinValue;
             float range;
 
-            float[,] data = new float[metadata.Width, metadata.Height];
+            int width, height, increment;
 
-            for (int i = 0; i < metadata.Height; i++)
+            if (metadata.Width > 0x1fff || metadata.Height > 0x1fff)
+            {
+                width = metadata.Width / 2;
+                height = metadata.Height / 2;
+                increment = 2;
+            }
+            else
+            {
+                width = metadata.Width;
+                height = metadata.Height;
+                increment = 1;
+            }
+
+            float[,] data = new float[width, height];
+
+            for (int i = 0; i <= metadata.Height - increment; i += increment)
             {
                 byte[] buffer = new byte[metadata.Width * metadata.BitsPerSample / 8];
                 _tiff.ReadScanline(buffer, i);
-                for (int p = 0; p < metadata.Width; p++)
+                for (int p = 0; p <= metadata.Width - increment; p += increment)
                 {
                     var heightValue = BitConverter.ToSingle(buffer, p * metadata.BitsPerSample / 8);
-                    data[p, i] = heightValue;
+                    data[p/increment, i/increment] = heightValue;
                     if (heightValue != -10000)
                     {
                         min = Math.Min(min, heightValue);
                         max = Math.Max(max, heightValue);
                     }
                 }
-                output.Write(buffer, 0, metadata.Width * metadata.BitsPerSample / 8);
+                //output.Write(buffer, 0, metadata.Width * metadata.BitsPerSample / 8);
             }
 
             // compute range of heights so we can normalize the values for the grayscale bmp
@@ -141,6 +156,13 @@ namespace GeoTiffSharp
             {
                 DiagnosticUtils.OutputDebugBitmap(data, min, max, bitmapFilename, -10000);
             }
+
+            metadata.Width /= increment;
+            metadata.Height /= increment;
+            metadata.PixelScaleX *= increment;
+            metadata.PixelScaleY *= increment;
+
+            return data;
         }
        
 
@@ -148,14 +170,11 @@ namespace GeoTiffSharp
         {
             var metadata = ParseMetadata(inputFile);
 
-            MemoryStream buffer = new MemoryStream();
-            WriteBinary(inputFile, buffer, outputDiagnosticBitmap, metadata);
-
-            buffer.Position = 0;
+            float[,] data = WriteBinary(inputFile, outputDiagnosticBitmap, metadata);
 
             using (var fileStream = File.OpenWrite(outputBinary))
             {
-                ScaleBinary.Reduce(metadata, buffer, fileStream, 64000);
+                ScaleBinary.Reduce(metadata, data, fileStream, 64000);
             }
 
             File.WriteAllText(outputMetadata, JsonConvert.SerializeObject(metadata, Formatting.Indented));

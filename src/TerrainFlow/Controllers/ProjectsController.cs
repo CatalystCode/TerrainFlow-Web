@@ -173,6 +173,18 @@ namespace TerrainFlow.Controllers
 
                     GeoTiff.ConvertToHeightMap(tiff, outputBinary, outputMetadata, outputThumbnail);
 
+                    try
+                    {
+                        if (System.IO.File.Exists(filePath))
+                            System.IO.File.Delete(filePath);
+
+                        Directory.Delete(workingDirectory, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.TraceWarning("Failed to cleanup working files. {0}", ex.ToString());
+                    }
+
                     return new List<string> { outputBinary, outputMetadata, outputThumbnail };
                 }
             }

@@ -9,7 +9,7 @@ namespace GeoTiffSharp
 {
     public static class ScaleBinary
     {
-        public static void Reduce(FileMetadata metadata, Stream input, Stream output, int desiredPoints)
+        public static void Reduce(FileMetadata metadata, float[,] input, Stream output, int desiredPoints)
         {
             // s = scaler to solve for
             // d = desired points
@@ -22,27 +22,7 @@ namespace GeoTiffSharp
             int newHeight = (int)Math.Floor(metadata.Height / scaler);
             int newWidth = (int)Math.Floor(metadata.Width / scaler);
 
-            float[,] originalMatrix = new float[metadata.Width, metadata.Height];
-            float[,] newMatrix = new float[newWidth, newHeight];
-
-            using (BinaryReader reader = new BinaryReader(input))
-            {
-                for (int y = 0; y < metadata.Height; y++)
-                {
-                    for (int x = 0; x < metadata.Width; x++)
-                    {
-                        switch (metadata.BitsPerSample)
-                        {
-                            case 32:
-                                originalMatrix[x, y] = reader.ReadSingle();
-                                break;
-                            case 16:
-                                originalMatrix[x, y] = reader.ReadUInt16();
-                                break;
-                        }
-                    }
-                }
-            }
+            float[,] newMatrix = new float[newWidth, newHeight];            
 
             float noDataValue = float.Parse(metadata.NoDataValue);
 
@@ -52,7 +32,7 @@ namespace GeoTiffSharp
                 {
                     for (int x = 0; x < newWidth; x++)
                     {
-                        float value = originalMatrix[(int)(x * scaler), (int)(y * scaler)];
+                        float value = input[(int)(x * scaler), (int)(y * scaler)];
 
                         if (value != noDataValue)
                             value /= scaler;
