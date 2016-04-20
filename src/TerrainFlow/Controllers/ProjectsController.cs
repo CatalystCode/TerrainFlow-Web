@@ -62,12 +62,7 @@ namespace TerrainFlow.Controllers
 
             try
             {
-                foreach (var file in files.Where(file => file.Length > 0))
-                {
-                    hashes.Add(await ProcessUpload(file));
-                }
-
-                return new JsonResult(hashes);
+                return await ProcessUpload(files.First());
             }
             catch (Exception ex)
             {
@@ -102,7 +97,7 @@ namespace TerrainFlow.Controllers
 
         #region Helpers
 
-        private async Task<string> ProcessUpload(IFormFile file)
+        private async Task<JsonResult> ProcessUpload(IFormFile file)
         {
             Trace.TraceInformation("Process upload for {0}", file.ToString());
 
@@ -117,29 +112,48 @@ namespace TerrainFlow.Controllers
             {
                 await file.CopyToAsync(stream);
             }
-
-            var resultPaths = ConvertFiles(filePath, sourceName);
-
-            if (resultPaths != null && resultPaths.Any())
+            
+            try
             {
-                foreach (var path in resultPaths)
-                {
-                    Trace.TraceInformation("Moving to blob store: {0}", path);
-                    var blobUri = await _storage.UploadFileToBlob(path, Path.GetFileName(path));
+                var resultPaths = ConvertFiles(filePath, sourceName);
+            
 
-                    // Hack - Grab the destination URI for use later
-                    if (blobUri.Contains(".dat"))
+                if (resultPaths != null && resultPaths.Any())
+                {
+                    foreach (var path in resultPaths)
                     {
-                        url = blobUri.Replace(".dat", string.Empty);
-                    }
+                        Trace.TraceInformation("Moving to blob store: {0}", path);
+                        var blobUri = await _storage.UploadFileToBlob(path, Path.GetFileName(path));
+
+                        // Hack - Grab the destination URI for use later
+                        if (blobUri.Contains(".dat"))
+                        {
+                            url = blobUri.Replace(".dat", string.Empty);
+                        }
                     
+                    }
+
+                    // update project name if appropriate
+                    string projectName = Path.GetFileNameWithoutExtension(sourceName);
+                    var projects = _storage.GetProjectsForUser(GetEmailFromUser());
+
+                    if (projects.Where(p => string.Equals(p.Name, projectName, StringComparison.OrdinalIgnoreCase)).Any())
+                    {
+                        int versionNumber = projects.Count(p => p.Name.Contains(projectName)) + 1;
+                        projectName = string.Format("{0} (v{1})", projectName, versionNumber);
+                    }
+                    _storage.SaveFileToTables(projectName, url, GetEmailFromUser());
                 }
-                
-                _storage.SaveFileToTables(Path.GetFileNameWithoutExtension(sourceName), url, GetEmailFromUser());
+
+            }
+            catch (Exception ex)
+            {
+                var result = new JsonResult(new { error = "The server failed to process this file.  Please verify source data is compatible." });
+                result.StatusCode = 500;
+                return result;
             }
 
-
-            return url ?? sourceName;
+            return Json(new { thumbnail = "url" + ".jpg" });
         }
 
         // Rough implementation, support for zipped tiff's

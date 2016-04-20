@@ -178,6 +178,8 @@ namespace GeoTiffSharp
             }
 
             File.WriteAllText(outputMetadata, JsonConvert.SerializeObject(metadata, Formatting.Indented));
+            
+            _tiff.Close();
         }
     }
 }
