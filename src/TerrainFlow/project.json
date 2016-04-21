@@ -10,7 +10,7 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-20100",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-20100",
     "Microsoft.Framework.Configuration.Json": "1.0.0-beta8",
-    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc3-20650",
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc3-20637",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-20100",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc2-20100",
     "Microsoft.Framework.Configuration": "1.0.0-beta8",
@@ -49,7 +49,10 @@
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-rc2-20100",
     "Microsoft.AspNetCore.Mvc.Dnx": "1.0.0-rc2-20100",
     "Microsoft.AspNetCore.Server.Kestrel.Https": "1.0.0-rc2-20100",
-    "Microsoft.AspNetCore.HttpOverrides": "1.0.0-rc2-20100"
+    "Microsoft.AspNetCore.HttpOverrides": "1.0.0-rc2-20100",
+    "Microsoft.Extensions.PlatformAbstractions.Dnx": "1.0.0-rc2-20221",
+    "Microsoft.Dnx.Compilation.CSharp.Common": "1.0.0-rc2-20221",
+    "Microsoft.Dnx.Compilation.CSharp.Abstractions": "1.0.0-rc2-20221"
   },
   "compilationOptions": {    
     "emitEntryPoint": true
