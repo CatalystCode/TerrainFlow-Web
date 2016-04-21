@@ -34,8 +34,8 @@ namespace GeoTiffSharp
                     {
                         float value = input[(int)(x * scaler), (int)(y * scaler)];
 
-                        if (value != noDataValue)
-                            value /= scaler;
+                        //if (value != noDataValue)
+                        //    value /= scaler;
 
                         writer.Write(value);
                     }
