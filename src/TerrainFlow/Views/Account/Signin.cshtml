@@ -12,21 +12,22 @@
     </div>
     <div class="panel-body signin">
         <section>
-            <p>You can sign in using any of the providers below. We don't save any data or access your accounts - we merely need to confirm your email address.</p>
+            <p>TerrainFlow does not require registration, you simply sign in using one of the supporters account types.</p>
+            <p>We save no information about you, we only associate your projects with this account.</p>
         </section>
         <section>
             <form action="/signin" method="post">
                 <input type="hidden" name="Provider" value="Microsoft"/>
                 <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl"/>
 
-                <button type="submit" class="btn btn-default btn-raised" name="provider" type="submit">Microsoft</button>
+                <button type="submit" class="btn btn-default btn-raised" name="provider" type="submit">Microsoft Account</button>
             </form>
-
+            <br/>
             <form action="/signin" method="post">
                 <input type="hidden" name="Provider" value="Google"/>
                 <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl"/>
 
-                <button type="submit" class="btn btn-default btn-raised" name="provider" type="submit">Google</button>
+                <button type="submit" class="btn btn-default btn-raised" name="provider" type="submit">Google Account</button>
             </form>
                 <!--
             <form action="/signin" method="post">

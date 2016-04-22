@@ -6,7 +6,6 @@
         <title>@ViewData["Title"] - TerrainFlow</title>
 
         <environment names="Development">
-            <link rel="shortcut icon" href="favicon.png" />
             <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
             <link rel="stylesheet" href="~/css/site.css"/>
             <!-- Bootstrap Material Design -->
@@ -19,6 +18,7 @@
             <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
         </environment>
         <environment names="Staging,Production">
+            <link rel="shortcut icon" href="/favicon.png" />
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.0.0/css/bootstrap.min.css"
                   asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
                   asp-fallback-test-class="hidden" asp-fallback-test-property="visibility" asp-fallback-test-value="hidden" />
@@ -38,7 +38,7 @@
         </environment>
     </head>
     <body>
-        <canvas width="1" height="1" id="container" style="position:absolute"></canvas>
+  
         <div class="container body-content">
             <div class="navbar navbar-inverse bluegrey">
                 <div class="container-fluid">
@@ -70,9 +70,6 @@
             <script src="~/lib/bootstrap-material-design/dist/js/ripples.min.js"></script>
             <script src="~/lib/dropzone/dist/dropzone.js"></script>
             <script src="~/js/site.js" asp-append-version="true"></script>
-            @if (ViewData["Title"].ToString() == "Home Page") {
-                <script src="~/js/rain.min.js" asp-append-version="true"></script>
-            }
         </environment>
         <environment names="Staging,Production">
             <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
@@ -96,9 +93,6 @@
             </script>
             <script src="~/lib/dropzone/dist/min/dropzone.min.js"></script>
             <script src="~/js/site.js" asp-append-version="true"></script>
-            @if (ViewData["Title"].ToString() == "Home Page") {
-                <script src="~/js/rain.min.js" asp-append-version="true"></script>
-            }
         </environment>
 
         @RenderSection("scripts", required: false)

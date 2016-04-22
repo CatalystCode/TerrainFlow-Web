@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel;
 
 namespace TerrainFlow
 {
@@ -58,7 +59,10 @@ namespace TerrainFlow
         {
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
-           
+
+            var ksi = app.ServerFeatures.Get<IKestrelServerInformation>();
+            ksi.ThreadCount = 1;
+
             Trace.Listeners.Add(new AzureApplicationLogTraceListener());
 
             app.Use(async (context, next) =>
